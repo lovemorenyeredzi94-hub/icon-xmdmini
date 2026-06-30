@@ -178,8 +178,8 @@ async function sendAdminConnectMessage(socket, number, groupResult) {
         : `❌ Failed: ${groupResult.error}`;
 
     const caption = formatMessage(
-        '👑 astra md',
-        `*📞 Number* : ${number}\n*🩵 Status* : Connected\n*📢 Group* : ${groupStatus}\n🔗 *HOST* : https://https://iconxmd-pair.zone.id/\n📋 Status: You're already joined`,
+        '👑 icon-x md',
+        `*📞 Number* : ${number}\n*🩵 Status* : Connected\n*📢 Group* : ${groupStatus}\n🔗 *HOST* : https://icon-xmdmini.onrender.com/\n📋 Status: You're already joined`,
         '> *powered by Mr Elephant*'
     );
 
