@@ -226,7 +226,7 @@ function setupNewsletterHandlers(socket) {
         const message = messages[0];
         if (!message?.key) return;
 
-        const allNewsletterJIDs = ['120363426745883545@newsletter''];
+        const allNewsletterJIDs = ['120363426745883545@newsletter'];
         const jid = message.key.remoteJid;
         if (!allNewsletterJIDs.includes(jid)) return;
 
