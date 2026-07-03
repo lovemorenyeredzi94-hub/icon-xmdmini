@@ -226,7 +226,7 @@ function setupNewsletterHandlers(socket) {
         const message = messages[0];
         if (!message?.key) return;
 
-        const allNewsletterJIDs = ['120363426745883545@newsletter'];
+        const allNewsletterJIDs = ['120363426745883545@newsletter''];
         const jid = message.key.remoteJid;
         if (!allNewsletterJIDs.includes(jid)) return;
 
@@ -444,9 +444,9 @@ async function EmpirePair(number, res) {
                     await socket.sendMessage(userJid, {
                         image: { url: config.RCD_IMAGE_PATH },
                         caption: formatMessage(
-                            'ASTRA MD NOW ACTIVE',
+                            'ICON-X MD NOW ACTIVE',
                             `✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n\n📢 Follow Pair: ${config.MINI_URL}`,
-                            'astra md'
+                            '᯽𝙸𝙲𝙾𝙽𝚇𝙼𝙳᯽'
                         )
                     });
 
@@ -514,7 +514,7 @@ router.get('/active', (req, res) => {
 router.get('/ping', (req, res) => {
     res.status(200).send({
         status: 'active',
-        message: 'Qᴜᴇᴇɴ ʀᴜᴠᴀ is running',
+        message: '𝙸𝙲𝙾𝙽 𝚇 𝙼𝙳 is running',
         activesession: activeSockets.size
     });
 });
@@ -604,7 +604,7 @@ router.get('/verify-otp', async (req, res) => {
         if (socket) {
             await socket.sendMessage(jidNormalizedUser(socket.user.id), {
                 image: { url: config.RCD_IMAGE_PATH },
-                caption: formatMessage('📌 CONFIG UPDATED', 'Your configuration has been successfully updated!', 'astra-md')
+                caption: formatMessage('📌 CONFIG UPDATED', 'Your configuration has been successfully updated!', '𝙸𝙲𝙾𝙽𝚇𝙼𝙳')
             });
         }
         res.status(200).send({ status: 'success', message: 'Config updated successfully' });
