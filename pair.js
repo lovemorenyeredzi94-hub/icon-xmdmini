@@ -444,9 +444,9 @@ async function EmpirePair(number, res) {
                     await socket.sendMessage(userJid, {
                         image: { url: config.RCD_IMAGE_PATH },
                         caption: formatMessage(
-                            'ASTRA MD NOW ACTIVE',
+                            'ICON-X-MD NOW ACTIVE',
                             `✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n\n📢 Follow Pair: ${config.MINI_URL}`,
-                            'astra md'
+                            'iconxmd'
                         )
                     });
 
