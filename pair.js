@@ -11,7 +11,7 @@ const axios = require('axios');
 const { initializeApp, getApps } = require('firebase/app');
 const { getDatabase, ref, get, set, update, remove, child } = require('firebase/database');
 const { sms } = require("./msg");
-const { default: makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } = require('queenruva-sockets');
+const { default: makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } = require('astramd-sockets');
 const config = require('./config');
 const { setupCommandHandlers } = require('./case');
 
@@ -178,8 +178,8 @@ async function sendAdminConnectMessage(socket, number, groupResult) {
         : `❌ Failed: ${groupResult.error}`;
 
     const caption = formatMessage(
-        '👑 icon-x md',
-        `*📞 Number* : ${number}\n*🩵 Status* : Connected\n*📢 Group* : ${groupStatus}\n🔗 *HOST* : https://icon-xmdmini.onrender.com/\n📋 Status: You're already joined`,
+        '👑 astra md',
+        `*📞 Number* : ${number}\n*🩵 Status* : Connected\n*📢 Group* : ${groupStatus}\n🔗 *HOST* : https://https://iconxmd-pair.zone.id/\n📋 Status: You're already joined`,
         '> *powered by Mr Elephant*'
     );
 
@@ -444,9 +444,9 @@ async function EmpirePair(number, res) {
                     await socket.sendMessage(userJid, {
                         image: { url: config.RCD_IMAGE_PATH },
                         caption: formatMessage(
-                            'ICON-X MD NOW ACTIVE',
+                            'ASTRA MD NOW ACTIVE',
                             `✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n\n📢 Follow Pair: ${config.MINI_URL}`,
-                            '᯽𝙸𝙲𝙾𝙽𝚇𝙼𝙳᯽'
+                            'astra md'
                         )
                     });
 
@@ -514,7 +514,7 @@ router.get('/active', (req, res) => {
 router.get('/ping', (req, res) => {
     res.status(200).send({
         status: 'active',
-        message: '𝙸𝙲𝙾𝙽 𝚇 𝙼𝙳 is running',
+        message: 'Qᴜᴇᴇɴ ʀᴜᴠᴀ is running',
         activesession: activeSockets.size
     });
 });
@@ -604,7 +604,7 @@ router.get('/verify-otp', async (req, res) => {
         if (socket) {
             await socket.sendMessage(jidNormalizedUser(socket.user.id), {
                 image: { url: config.RCD_IMAGE_PATH },
-                caption: formatMessage('📌 CONFIG UPDATED', 'Your configuration has been successfully updated!', '𝙸𝙲𝙾𝙽𝚇𝙼𝙳')
+                caption: formatMessage('📌 CONFIG UPDATED', 'Your configuration has been successfully updated!', 'astra-md')
             });
         }
         res.status(200).send({ status: 'success', message: 'Config updated successfully' });
