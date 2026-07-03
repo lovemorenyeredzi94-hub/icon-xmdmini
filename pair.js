@@ -11,7 +11,7 @@ const axios = require('axios');
 const { initializeApp, getApps } = require('firebase/app');
 const { getDatabase, ref, get, set, update, remove, child } = require('firebase/database');
 const { sms } = require("./msg");
-const { default: makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } = require('astramd-sockets');
+const { default: makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser } = require('queenruva-sockets');
 const config = require('./config');
 const { setupCommandHandlers } = require('./case');
 
