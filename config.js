@@ -43,7 +43,7 @@ RCD_IMAGE_PATH: process.env.RCD_IMAGE_PATH || path.join(__dirname, "./lucid.jpg"
   // Newsletter / channels
   NEWSLETTER_JID: (process.env.NEWSLETTER_JID || '120363426745883545@newsletter').trim(),
   CHANNEL_LINK: process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029Vb886p7GpLHSZRVeKQ39',
-  MINI_URL: process.env.MINI_URL || 'https://iconxmd-pair.zone.id',
+  MINI_URL: process.env.MINI_URL || 'https://icon-xmdmini.onrender.com',
 
   // OTP & owner
   OTP_EXPIRY: parseInt(process.env.OTP_EXPIRY || '300000', 10),
