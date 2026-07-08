@@ -1,14 +1,15 @@
 {
-  "name": "icon-md-mini",
+  "name": "icon-x-md",
   "version": "1.0.0",
-  "description": "Icon md WhatsApp Bot by Mr Elephant",
+  "description": "icon-x md WhatsApp Bot by Mr Elephant",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "keep-alive": "node keep-alive.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-  "queenruva-sockets": "latest",
+    "queenruva-sockets": "latest",
     "firebase": "^10.12.2",
     "express": "^4.18.2",
     "fs-extra": "^11.2.0",
@@ -34,8 +35,8 @@
     "bot",
     "multi-device",
     "baileys",
-    "astra-md"
+    "icon-xmd"
   ],
-  "author": "WhiteKid Tech",
+  "author": "Mr Elephant",
   "license": "MIT"
 }
