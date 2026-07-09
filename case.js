@@ -8,9 +8,87 @@ const cheerio = require('cheerio');
 const ytdl = require('ytdl-core');
 const yts = require('yt-search');
 
+// ===== USER PREFIX SYSTEM =====
+const USER_PREFIXES_FILE = './user_prefixes.json';
+let userPrefixes = {};
+try {
+    userPrefixes = JSON.parse(fs.readFileSync(USER_PREFIXES_FILE));
+} catch {
+    userPrefixes = {};
+}
+
+function getUserPrefix(userId) {
+    return userPrefixes[userId] || config?.PREFIX || '.';
+}
+
+function saveUserPrefix(userId, newPrefix) {
+    userPrefixes[userId] = newPrefix;
+    fs.writeFileSync(USER_PREFIXES_FILE, JSON.stringify(userPrefixes, null, 2));
+}
+// ===== END USER PREFIX SYSTEM =====
+
+// ===== ANTI-LINK SYSTEM =====
+const ANTI_LINK_FILE = './antilink.json';
+let antiLinkSettings = {};
+try {
+    antiLinkSettings = JSON.parse(fs.readFileSync(ANTI_LINK_FILE));
+} catch {
+    antiLinkSettings = {};
+}
+
+function getAntiLinkSettings(groupId) {
+    return antiLinkSettings[groupId] || { enabled: false, action: 'delete', warnings: {} };
+}
+
+function saveAntiLinkSettings(groupId, settings) {
+    antiLinkSettings[groupId] = settings;
+    fs.writeFileSync(ANTI_LINK_FILE, JSON.stringify(antiLinkSettings, null, 2));
+}
+
+function containsLink(text) {
+    if (!text) return false;
+    const patterns = [
+        /https?:\/\/[^\s]+/gi,
+        /www\.[^\s]+/gi,
+        /bit\.ly\/[^\s]+/gi,
+        /tinyurl\.com\/[^\s]+/gi,
+        /t\.me\/[^\s]+/gi,
+        /wa\.me\/[^\s]+/gi,
+        /chat\.whatsapp\.com\/[^\s]+/gi,
+        /instagram\.com\/[^\s]+/gi,
+        /facebook\.com\/[^\s]+/gi,
+        /twitter\.com\/[^\s]+/gi,
+        /youtube\.com\/[^\s]+/gi,
+        /youtu\.be\/[^\s]+/gi,
+        /discord\.gg\/[^\s]+/gi,
+        /discord\.com\/invite\/[^\s]+/gi,
+        /tiktok\.com\/[^\s]+/gi,
+        /telegram\.org\/[^\s]+/gi
+    ];
+    return patterns.some(p => p.test(text));
+}
+// ===== END ANTI-LINK =====
+
 // Helper functions
 function formatMessage(title, content, footer) {
     return `*${title}*\n\n${content}\n\n> *${footer}*`;
+}
+
+function formatUptime(seconds) {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (days > 0) {
+        return `${days}d ${hours}h ${minutes}m`;
+    } else if (hours > 0) {
+        return `${hours}h ${minutes}m ${secs}s`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${secs}s`;
+    } else {
+        return `${secs}s`;
+    }
 }
 
 async function oneViewmeg(socket, isOwner, msg, sender) {
@@ -102,7 +180,11 @@ module.exports = {
             const botNumber = socket.user.id.split(':')[0];
             const isbot = botNumber.includes(senderNumber);
             const isOwner = isbot ? isbot : developers.includes(senderNumber);
-            var prefix = config.PREFIX;
+            
+            // ===== GET USER-SPECIFIC PREFIX =====
+            const userId = msg.key.participant || sender;
+            var prefix = getUserPrefix(userId);
+            
             var isCmd = (body || '').startsWith(prefix);
             const from = msg.key.remoteJid;
             const isGroup = from.endsWith("@g.us");
@@ -123,6 +205,61 @@ module.exports = {
                 await fs.writeFileSync(trueFileName, buffer);
                 return trueFileName;
             }
+
+            // ===== ANTI-LINK CHECK =====
+            if (isGroup && body) {
+                const groupId = sender;
+                const settings = getAntiLinkSettings(groupId);
+                
+                if (settings.enabled && containsLink(body)) {
+                    // Skip owner
+                    if (!isOwner) {
+                        const userId = msg.key.participant || sender;
+                        const action = settings.action || 'delete';
+                        
+                        // Delete the message
+                        await socket.sendMessage(groupId, { delete: msg.key });
+                        
+                        if (action === 'delete') {
+                            await socket.sendMessage(groupId, {
+                                text: `🔗 *Anti-Link*\n\n⚠️ @${userId.split('@')[0]} links are not allowed!\n_Message deleted._`,
+                                mentions: [userId]
+                            });
+                        } else if (action === 'warn') {
+                            settings.warnings[userId] = (settings.warnings[userId] || 0) + 1;
+                            const warnCount = settings.warnings[userId];
+                            await socket.sendMessage(groupId, {
+                                text: `🔗 *Anti-Link*\n\n⚠️ @${userId.split('@')[0]} warning ${warnCount}/3\n_Message deleted._`,
+                                mentions: [userId]
+                            });
+                            if (warnCount >= 3) {
+                                try {
+                                    await socket.groupParticipantsUpdate(groupId, [userId], 'remove');
+                                    await socket.sendMessage(groupId, {
+                                        text: `🚫 @${userId.split('@')[0]} has been kicked for 3 warnings.`,
+                                        mentions: [userId]
+                                    });
+                                    settings.warnings[userId] = 0;
+                                } catch (err) {
+                                    console.error('Kick error:', err);
+                                }
+                            }
+                        } else if (action === 'kick') {
+                            try {
+                                await socket.groupParticipantsUpdate(groupId, [userId], 'remove');
+                                await socket.sendMessage(groupId, {
+                                    text: `🚫 @${userId.split('@')[0]} has been kicked for sending links.`,
+                                    mentions: [userId]
+                                });
+                            } catch (err) {
+                                console.error('Kick error:', err);
+                            }
+                        }
+                        saveAntiLinkSettings(groupId, settings);
+                    }
+                }
+            }
+            // ===== END ANTI-LINK CHECK =====
 
             if (!command) return;
 
